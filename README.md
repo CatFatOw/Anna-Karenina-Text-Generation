@@ -1,3 +1,9 @@
+---
+title: Anna Karenina Text Generator
+sdk: docker
+pinned: false
+---
+
 # Anna Karenina Word Generator
 
 Code repository: https://github.com/CatFatOw/Anna-Karenina-Text-Generation
