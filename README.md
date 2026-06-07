@@ -1,5 +1,7 @@
 ---
 title: Anna Karenina Text Generator
+colorFrom: pink
+colorTo: purple
 sdk: docker
 pinned: false
 ---
