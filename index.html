@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Annie Word Generator</title>
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <main class="app-shell">
+      <section class="workspace" aria-labelledby="page-title">
+        <div class="masthead">
+          <div>
+            <p class="eyebrow">Book language model</p>
+            <h1 id="page-title">Annie Word Generator</h1>
+          </div>
+          <div class="status" id="model-status" data-mode="checking">
+            <span class="status-dot" aria-hidden="true"></span>
+            <span>Checking model</span>
+          </div>
+        </div>
+
+        <form class="generator" id="generator-form">
+          <label for="prompt">Prompt</label>
+          <textarea
+            id="prompt"
+            name="prompt"
+            rows="8"
+            placeholder="Start with a line from the book, a character name, or a scene idea..."
+            required
+          ></textarea>
+
+          <div class="controls" aria-label="Generation controls">
+            <label class="field" for="length">
+              <span>Words</span>
+              <input id="length" name="length" type="number" min="20" max="600" step="10" value="200">
+            </label>
+
+            <label class="field" for="temperature">
+              <span>Temperature</span>
+              <input id="temperature" name="temperature" type="range" min="0.4" max="1.4" step="0.1" value="1">
+            </label>
+
+            <button type="submit" id="generate-button">
+              <span class="button-icon" aria-hidden="true">+</span>
+              Generate
+            </button>
+          </div>
+        </form>
+
+        <form class="upload-box" id="weights-form">
+          <div>
+            <label for="weights">Upload weights</label>
+            <p>Use your own `.pth` or `.pt` checkpoint for this generator.</p>
+          </div>
+          <div class="upload-controls">
+            <input id="weights" name="weights" type="file" accept=".pth,.pt,.bin,application/octet-stream">
+            <button type="submit" id="weights-button">Upload</button>
+          </div>
+          <p class="upload-message" id="upload-message" role="status"></p>
+        </form>
+      </section>
+
+      <section class="output-panel" aria-labelledby="output-title">
+        <div class="output-header">
+          <div>
+            <p class="eyebrow">Generated passage</p>
+            <h2 id="output-title">Draft</h2>
+          </div>
+          <button type="button" class="copy-button" id="copy-button" disabled>Copy</button>
+        </div>
+
+        <article class="paper" id="output" aria-live="polite">
+          <p class="placeholder">
+            Your generated passage will appear here after you enter a prompt.
+          </p>
+        </article>
+      </section>
+    </main>
+
+    <aside class="notes" aria-label="Model setup notes">
+      <span>Default checkpoint: <strong>LSTM_Annie.pth</strong></span>
+      <span>Real generation turns on when Torch and vocabulary JSON files are available.</span>
+    </aside>
+
+    <script src="app.js"></script>
+  </body>
+</html>

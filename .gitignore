@@ -1,0 +1,7 @@
+__pycache__/
+*.py[cod]
+uploaded_weights/
+vocab.json
+word_to_int.json
+int_to_word.json
+.DS_Store
