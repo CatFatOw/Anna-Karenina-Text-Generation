@@ -126,7 +126,11 @@ def init_model() -> None:
     global MODEL, TORCH, WORD_TO_INT, INT_TO_WORD, MODEL_ERROR, ACTIVE_MODEL_PATH
 
     MODEL = None
-    ACTIVE_MODEL_PATH = active_model_path()
+    try:
+        ACTIVE_MODEL_PATH = active_model_path()
+    except Exception as exc:
+        MODEL_ERROR = f"Could not locate model checkpoint: {exc}"
+        return
 
     try:
         import torch

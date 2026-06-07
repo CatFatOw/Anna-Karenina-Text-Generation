@@ -106,6 +106,11 @@ loads the model in this order:
 If the Hugging Face model repo is private, add an `HF_TOKEN` secret to the Space
 settings too. Public model repos do not need a Space token for download.
 
+Important: the GitHub Actions `HF_TOKEN` secret only deploys code to Hugging
+Face. If `CatFatOw123/Anna_Karenina_Model` is private, the running Space also
+needs its own `HF_TOKEN` secret in the Hugging Face Space settings so
+`hf_hub_download` can fetch `LSTM_Annie.pth`.
+
 You can upload a different `.pth`, `.pt`, or `.bin` checkpoint from the website.
 Uploaded checkpoints are stored locally in `uploaded_weights/`, which is ignored
 by Git so large model files are not pushed to GitHub.
