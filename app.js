@@ -10,6 +10,7 @@ const weightsForm = document.querySelector("#weights-form");
 const weightsInput = document.querySelector("#weights");
 const weightsButton = document.querySelector("#weights-button");
 const uploadMessage = document.querySelector("#upload-message");
+const examplePrompt = document.querySelector("#example-prompt");
 
 let lastGeneratedText = "";
 
@@ -169,6 +170,11 @@ weightsForm.addEventListener("submit", async (event) => {
     weightsButton.disabled = false;
     weightsButton.textContent = "Upload";
   }
+});
+
+examplePrompt.addEventListener("click", () => {
+  promptInput.value = "Anna and the prince walked into the candlelit ballroom";
+  promptInput.focus();
 });
 
 copyButton.addEventListener("click", async () => {

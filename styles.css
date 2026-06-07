@@ -166,6 +166,22 @@ input:focus {
   box-shadow: 0 0 0 3px rgba(51, 92, 103, 0.16);
 }
 
+.example-prompt {
+  width: fit-content;
+  min-height: 36px;
+  margin-top: -8px;
+  padding: 0 12px;
+  border-color: var(--line);
+  background: rgba(255, 252, 246, 0.74);
+  color: var(--blue);
+  font-size: 0.88rem;
+}
+
+.example-prompt:hover {
+  border-color: rgba(51, 92, 103, 0.42);
+  background: #fffaf2;
+}
+
 .controls {
   display: grid;
   grid-template-columns: 96px 1fr auto;
@@ -363,7 +379,8 @@ input[type="file"] {
   }
 
   #generate-button,
-  #weights-button {
+  #weights-button,
+  .example-prompt {
     width: 100%;
   }
 
