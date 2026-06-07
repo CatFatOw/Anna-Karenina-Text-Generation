@@ -51,6 +51,24 @@ http://127.0.0.1:8000
 If port `8000` is already in use, the server automatically tries the next
 available port from `8001` through `8010` and prints the URL in the terminal.
 
+## Host on Hugging Face Spaces
+
+Hugging Face Spaces can run this app with the real Torch model. Use a Docker
+Space because this project has a custom Python HTTP server rather than a Gradio
+or static-only app.
+
+1. Create a new Space on Hugging Face.
+2. Choose `Docker` as the Space SDK.
+3. Upload or push this repository to the Space.
+4. Hugging Face will build the included `Dockerfile`.
+5. The app runs on port `7860` and loads:
+   - `models/LSTM_Annie.pth`
+   - `vocab.json`
+   - dependencies from `requirements.txt`
+
+Free CPU Basic hardware should be enough for this small LSTM, though generation
+may take a few seconds and the Space can sleep when unused.
+
 ## Model mode
 
 The checkpoint at `models/LSTM_Annie.pth` contains a three-layer LSTM state dict

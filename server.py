@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import os
 import re
 import shutil
 import ast
@@ -359,19 +360,26 @@ class Handler(SimpleHTTPRequestHandler):
 
 def main() -> None:
     init_model()
-    server = None
-    port = 8000
-    for candidate in range(8000, 8011):
-        try:
-            server = ThreadingHTTPServer(("127.0.0.1", candidate), Handler)
-            port = candidate
-            break
-        except OSError:
-            continue
-    if server is None:
-        raise OSError("No available local port found between 8000 and 8010.")
+    host = os.environ.get("HOST", "127.0.0.1")
+    env_port = os.environ.get("PORT")
 
-    print(f"Anna Karenina Word Generator running at http://127.0.0.1:{port}")
+    if env_port:
+        port = int(env_port)
+        server = ThreadingHTTPServer((host, port), Handler)
+    else:
+        server = None
+        port = 8000
+        for candidate in range(8000, 8011):
+            try:
+                server = ThreadingHTTPServer((host, candidate), Handler)
+                port = candidate
+                break
+            except OSError:
+                continue
+        if server is None:
+            raise OSError("No available local port found between 8000 and 8010.")
+
+    print(f"Anna Karenina Word Generator running at http://{host}:{port}")
     if MODEL_ERROR:
         print(f"Demo mode: {MODEL_ERROR}")
     server.serve_forever()
