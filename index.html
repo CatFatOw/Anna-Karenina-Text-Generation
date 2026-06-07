@@ -40,9 +40,11 @@
             placeholder="Start with a line from the book, a character name, or a scene idea..."
             required
           ></textarea>
-          <button type="button" class="example-prompt" id="example-prompt">
-            Example: Anna and the prince
-          </button>
+          <div class="prompt-examples" id="prompt-examples" aria-label="Example prompts">
+            <button type="button" class="example-prompt" data-example-index="0">
+              Example: Anna and the prince
+            </button>
+          </div>
 
           <div class="controls" aria-label="Generation controls">
             <label class="field" for="length">

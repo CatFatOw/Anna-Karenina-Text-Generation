@@ -11,7 +11,7 @@ const weightsForm = document.querySelector("#weights-form");
 const weightsInput = document.querySelector("#weights");
 const weightsButton = document.querySelector("#weights-button");
 const uploadMessage = document.querySelector("#upload-message");
-const examplePrompt = document.querySelector("#example-prompt");
+const promptExamples = document.querySelector("#prompt-examples");
 const pageTitle = document.querySelector("#page-title");
 const modelTitle = document.querySelector("#model-title");
 const modelDescription = document.querySelector("#model-description");
@@ -28,7 +28,7 @@ const books = {
     bodyClass: "theme-anna",
     modelTitle: "Anna Karenina LSTM",
     checkpoint: "LSTM_Annie.pth",
-    example: "Anna and the prince",
+    examples: ["Anna and the prince", "anna looked out of the window and"],
     description: "A society novel model tuned toward drawing rooms, glances, family tension, and Tolstoy's restless interior cadence.",
     demoWords: ["princess", "vronsky", "levin", "drawing", "room", "smile", "carriage", "letter", "heart", "dolly", "anna", "prince", "silence", "love", "moscow"]
   },
@@ -37,7 +37,7 @@ const books = {
     bodyClass: "theme-war",
     modelTitle: "War of the Worlds LSTM",
     checkpoint: "war_lstm.pth",
-    example: "the martians attacked, bringing desctruction and death along its wake.",
+    examples: ["the martians attacked, bringing desctruction and death along its wake."],
     description: "A science-fiction invasion model built around Martians, cylinders, smoke, heat-rays, London roads, and planetary dread.",
     demoWords: ["martians", "cylinder", "woking", "heat", "ray", "smoke", "tripod", "london", "earth", "pit", "red", "weed", "destruction", "death", "darkness"]
   }
@@ -133,7 +133,11 @@ function renderBookState() {
   pageTitle.textContent = book.title;
   modelTitle.textContent = book.modelTitle;
   modelDescription.textContent = book.description;
-  examplePrompt.textContent = `Example: ${book.example}`;
+  promptExamples.innerHTML = book.examples
+    .map((example, index) => (
+      `<button type="button" class="example-prompt" data-example-index="${index}">Example: ${escapeHtml(example)}</button>`
+    ))
+    .join("");
   checkpointNote.innerHTML = `Default checkpoint: <strong>${book.checkpoint}</strong>`;
   modelStatus.dataset.mode = status.ready ? "ready" : "demo";
   modelStatus.querySelector("span:last-child").textContent = status.ready ? "LSTM ready" : "Demo mode";
@@ -222,8 +226,11 @@ bookTabs.forEach((tab) => {
   });
 });
 
-examplePrompt.addEventListener("click", () => {
-  promptInput.value = books[currentBook].example;
+promptExamples.addEventListener("click", (event) => {
+  const button = event.target.closest(".example-prompt");
+  if (!button) return;
+  const index = Number(button.dataset.exampleIndex) || 0;
+  promptInput.value = books[currentBook].examples[index];
   promptInput.focus();
 });
 

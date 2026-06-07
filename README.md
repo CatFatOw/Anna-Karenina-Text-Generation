@@ -29,6 +29,12 @@ The default Anna generation settings mirror this call:
 print(generate(model.to(device), "Anna and the prince", top_k=3, length=300, temperature=0.3))
 ```
 
+The Anna tab also includes this starter:
+
+```text
+anna looked out of the window and
+```
+
 The default War of the Worlds generation settings mirror this call:
 
 ```python
