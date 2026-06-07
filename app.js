@@ -2,6 +2,7 @@ const form = document.querySelector("#generator-form");
 const promptInput = document.querySelector("#prompt");
 const lengthInput = document.querySelector("#length");
 const temperatureInput = document.querySelector("#temperature");
+const topKInput = document.querySelector("#top-k");
 const output = document.querySelector("#output");
 const copyButton = document.querySelector("#copy-button");
 const generateButton = document.querySelector("#generate-button");
@@ -110,8 +111,9 @@ async function updateStatus() {
 form.addEventListener("submit", async (event) => {
   event.preventDefault();
   const prompt = promptInput.value.trim();
-  const length = Number(lengthInput.value) || 200;
-  const temperature = Number(temperatureInput.value) || 1;
+  const length = Number(lengthInput.value) || 300;
+  const temperature = Number(temperatureInput.value) || 0.8;
+  const topK = Number(topKInput.value) || 10;
   if (!prompt) return;
 
   generateButton.disabled = true;
@@ -121,7 +123,7 @@ form.addEventListener("submit", async (event) => {
     const response = await fetch("/api/generate", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ prompt, length, temperature })
+      body: JSON.stringify({ prompt, length, temperature, top_k: topK })
     });
     if (!response.ok) throw new Error("Backend unavailable");
     const data = await response.json();
@@ -173,7 +175,7 @@ weightsForm.addEventListener("submit", async (event) => {
 });
 
 examplePrompt.addEventListener("click", () => {
-  promptInput.value = "Anna and the prince walked into the candlelit ballroom";
+  promptInput.value = "Anna and the prince";
   promptInput.focus();
 });
 

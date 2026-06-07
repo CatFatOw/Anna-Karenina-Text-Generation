@@ -133,40 +133,41 @@ def init_model() -> None:
         MODEL_ERROR = f"Could not load model: {exc}"
 
 
-def sample(model: Any, prompt: str, length: int = 200, temperature: float = 1.0) -> str:
-    """Length is desired prompt length max."""
+def generate(model: Any, prompt: str, top_k: int | None = None, length: int = 200, temperature: float = 1.0) -> str:
     model.eval()
-    text = prompt.lower().split(" ")
+    text = prompt.lower().split()
     hc = model.init_hidden(1)
+    hc = tuple(h.to(DEVICE) for h in hc)
+
     length = length - len(text)
 
     for _ in range(max(0, length)):
-        known_words = [WORD_TO_INT[w] for w in text[-SEQ_LEN:] if w in WORD_TO_INT]
-        if not known_words:
-            known_words = [0]
+        if len(text) <= SEQ_LEN:
+            tokens = [WORD_TO_INT[w] for w in text if w in WORD_TO_INT]
+        else:
+            tokens = [WORD_TO_INT[w] for w in text[-SEQ_LEN:] if w in WORD_TO_INT]
 
-        x = TORCH.tensor([known_words])
-        inputs = x.to(DEVICE)
-        hc = tuple([h.to(DEVICE) for h in hc])
-        output, hc = model(inputs, hc)
-        logits = output[0][-1] / max(0.1, temperature)
-        p = TORCH.softmax(logits, dim=0).detach().cpu().numpy()
+        if not tokens:
+            tokens = [0]
 
-        import numpy as np
+        x = TORCH.tensor([tokens], device=DEVICE)
+        output, hc = model(x, hc)
+        logits = output[0][-1]
+        logits = logits / max(0.1, temperature)
+        probs = TORCH.softmax(logits, dim=0)
 
-        idx = np.random.choice(len(logits), p=p)
+        if top_k is None:
+            idx = TORCH.multinomial(probs, num_samples=1).item()
+        else:
+            top_k = max(1, min(int(top_k), probs.numel()))
+            top_probs, top_indices = TORCH.topk(probs, top_k)
+            top_probs = top_probs / top_probs.sum()
+            choice = TORCH.multinomial(top_probs, num_samples=1).item()
+            idx = top_indices[choice].item()
+
         text.append(INT_TO_WORD[idx])
 
-    text = " ".join(text)
-
-    for m in ",.:;?!$()/_&%*@'`":
-        text = text.replace(f" {m}", f"{m} ")
-        text = text.replace('" ', '"')
-        text = text.replace("' ", "'")
-        text = text.replace('" ', '"')
-        text = text.replace("' ", "'")
-
-    return text
+    return format_generated_text(" ".join(text))
 
 
 def demo_sample(prompt: str, length: int) -> str:
@@ -255,8 +256,10 @@ class Handler(SimpleHTTPRequestHandler):
         try:
             payload = json.loads(self.rfile.read(length) or b"{}")
             prompt = str(payload.get("prompt", "")).strip()
-            requested_length = max(20, min(600, int(payload.get("length", 200))))
-            temperature = max(0.1, min(2.0, float(payload.get("temperature", 1))))
+            requested_length = max(20, min(600, int(payload.get("length", 300))))
+            temperature = max(0.1, min(2.0, float(payload.get("temperature", 0.8))))
+            top_k_value = payload.get("top_k", 10)
+            top_k = None if top_k_value in (None, "", "none") else max(1, min(100, int(top_k_value)))
         except Exception:
             self.send_json({"error": "Invalid request payload."}, 400)
             return
@@ -266,7 +269,7 @@ class Handler(SimpleHTTPRequestHandler):
             return
 
         if MODEL is not None:
-            text = format_generated_text(sample(MODEL, prompt, requested_length, temperature))
+            text = generate(MODEL.to(DEVICE), prompt, top_k=top_k, length=requested_length, temperature=temperature)
             self.send_json({"text": text, "mode": "model"})
             return
 

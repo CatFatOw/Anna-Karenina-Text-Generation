@@ -184,7 +184,7 @@ input:focus {
 
 .controls {
   display: grid;
-  grid-template-columns: 96px 1fr auto;
+  grid-template-columns: 96px 1fr 88px auto;
   gap: 12px;
   align-items: end;
 }

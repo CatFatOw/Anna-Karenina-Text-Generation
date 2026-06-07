@@ -10,10 +10,16 @@ dependencies are not available.
 The app describes the model as an LSTM trained for 15 epochs on an A100 GPU to
 replicate the language and cadence of _Anna Karenina_.
 
+The default generation settings mirror this call:
+
+```python
+print(generate(model.to(device), "Anna and the prince", top_k=10, length=300, temperature=0.8))
+```
+
 ## Features
 
 - Prompt-based text generation
-- Word-count and temperature controls
+- Word-count, temperature, and Top-K controls
 - Manuscript-style output formatting
 - Copy-to-clipboard support
 - Optional upload for custom `.pth`, `.pt`, or `.bin` checkpoint weights
