@@ -37,7 +37,7 @@ const books = {
     bodyClass: "theme-war",
     modelTitle: "War of the Worlds LSTM",
     checkpoint: "war_lstm.pth",
-    examples: ["the martians attacked, bringing desctruction and death along its wake."],
+    examples: ["The Martians attacked, bringing destruction and death in their wake."],
     description: "A science-fiction invasion model built around Martians, cylinders, smoke, heat-rays, London roads, and planetary dread.",
     demoWords: ["martians", "cylinder", "woking", "heat", "ray", "smoke", "tripod", "london", "earth", "pit", "red", "weed", "destruction", "death", "darkness"]
   }

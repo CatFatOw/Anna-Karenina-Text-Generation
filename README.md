@@ -38,7 +38,7 @@ anna looked out of the window and
 The default War of the Worlds generation settings mirror this call:
 
 ```python
-print(generate(model.to(device), "the martians attacked, bringing desctruction and death along its wake.", top_k=3, length=300, temperature=0.3))
+print(generate(model.to(device), "The Martians attacked, bringing destruction and death in their wake.", top_k=3, length=300, temperature=0.3))
 ```
 
 ## Features
