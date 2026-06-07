@@ -3,6 +3,7 @@ from __future__ import annotations
 import json
 import re
 import shutil
+import ast
 from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from random import choice, random
@@ -11,6 +12,7 @@ from urllib.parse import urlparse
 
 ROOT = Path(__file__).resolve().parent
 DEFAULT_MODEL_PATH = Path("/Users/michaelwu/Downloads/LSTM_Annie.pth")
+DEFAULT_OUTPUT_PATH = Path("/Users/michaelwu/Downloads/output.txt")
 UPLOAD_DIR = ROOT / "uploaded_weights"
 ACTIVE_MODEL_POINTER = UPLOAD_DIR / "active_checkpoint.txt"
 SEQ_LEN = 100
@@ -77,6 +79,17 @@ def load_vocab() -> tuple[dict[str, int], dict[int, str]]:
         word_to_int = json.loads(word_path.read_text())
         int_to_word = {int(k): v for k, v in json.loads(int_path.read_text()).items()}
         return word_to_int, int_to_word
+
+    if DEFAULT_OUTPUT_PATH.exists():
+        lines = DEFAULT_OUTPUT_PATH.read_text(errors="replace").splitlines()
+        try:
+            word_index = lines.index("Mapping the word to int") + 1
+            int_index = lines.index("Mapping the int to word") + 1
+            word_to_int = ast.literal_eval(lines[word_index])
+            int_to_word = {int(k): v for k, v in ast.literal_eval(lines[int_index]).items()}
+            return word_to_int, int_to_word
+        except (ValueError, SyntaxError, IndexError) as exc:
+            raise ValueError(f"Could not parse vocabulary from {DEFAULT_OUTPUT_PATH}: {exc}") from exc
 
     return {}, {}
 

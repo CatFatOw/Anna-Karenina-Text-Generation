@@ -66,4 +66,14 @@ vocabulary formats to this folder:
 
 Save that as `vocab.json`, or save the two mappings separately as `word_to_int.json` and `int_to_word.json`.
 
+If those JSON files are missing, the server also tries to parse the printed
+training output at `/Users/michaelwu/Downloads/output.txt`, as long as it
+contains the `Mapping the word to int` and `Mapping the int to word` sections.
+
 Without those files, the app runs in demo mode so the website remains usable.
+
+On this machine, the Torch-enabled Python is:
+
+```bash
+/usr/local/bin/python3 server.py
+```
